@@ -4,8 +4,7 @@ const { merge } = require('webpack-merge');
 const dummyExportFunc = require('./src/util/scripts/pushNotificationDataDownload');
 
 const baseConfig = {
-
-  mode: 'development',
+  mode: 'production',
   entry: './src/util/scripts/pushNotificationScript.ts',
   output: {
     path: path.resolve(__dirname, 'public/scripts'),
@@ -27,7 +26,6 @@ const baseConfig = {
 
 // Merge the base configuration with the fetched data
 module.exports = dummyExportFunc().then((PUSH_DATA) => {
-  console.log('helo', PUSH_DATA);
   const config = merge(baseConfig, {
     plugins: [
       new webpack.DefinePlugin({

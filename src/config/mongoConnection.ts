@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Feed from '../v1/feed/feed.model';
 
 export async function MongoConnection() {
   const config: any = {
@@ -8,6 +9,10 @@ export async function MongoConnection() {
   try {
     await mongoose.connect(process.env.CONNECTION_STRING as string, config);
     console.log('db connected');
+
+    Feed.createCollection().then(() => {
+      console.log('Feed is created!');
+    });
   } catch (error) {
     mongoose.connection.close();
     // eslint-disable-next-line no-console
