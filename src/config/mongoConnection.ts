@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Feed from '../v1/feed/feed.model';
+import Subscription from '../v1/subscription/subscription.model';
 
 export async function MongoConnection() {
   const config: any = {
@@ -11,6 +12,10 @@ export async function MongoConnection() {
     console.log('db connected');
 
     Feed.createCollection().then(() => {
+      console.log('Feed is created!');
+    });
+
+    Subscription.createCollection().then(() => {
       console.log('Feed is created!');
     });
   } catch (error) {

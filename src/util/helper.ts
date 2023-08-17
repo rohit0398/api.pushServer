@@ -12,7 +12,7 @@ export function queryGenerator(req: Request) {
     ? (Number(req.query?.page) - 1) * Number(limit)
     : 0;
 
-  const sort = { createdAt: req.query.sort === 'asc' ? 1 : -1 };
+  const sort = { createdAt: req.query?.sort === 'asc' ? 1 : -1 };
 
   return {
     sort,

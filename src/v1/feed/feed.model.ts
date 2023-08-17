@@ -22,7 +22,10 @@ const feedSchema = new mongoose.Schema({
   blockRedirectUrl: {
     type: String,
   },
-  createdAt: Date,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
   updatedAt: Date,
 });
 
