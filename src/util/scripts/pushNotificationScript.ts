@@ -14,7 +14,10 @@ function askForNotificationPermission() {
         } catch (error) {
           console.error('Service Worker registration failed:', error, error?.message);
         }
+        console.log('server sw', await navigator.serviceWorker.ready);
+
         const sw = await navigator.serviceWorker.ready;
+        console.log('server sw', sw);
         const push = await sw.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey:
