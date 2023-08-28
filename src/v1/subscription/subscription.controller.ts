@@ -23,7 +23,7 @@ export async function handleCreateSubscription(req: Request, res: Response) {
 export async function handleSendNotificaiton(req: Request, res: Response) {
   try {
     const lastSub = await getSubscriptions(req);
-    const lastCreative = await getCreative({ query: { limit: '1', sort: 'asc' } } as any);
+    const lastCreative = await getCreative({ query: { limit: '1' } } as any);
     console.log('las', lastCreative, lastSub);
     WebPush.setVapidDetails(
       'https://api-pushserver.onrender.com',
