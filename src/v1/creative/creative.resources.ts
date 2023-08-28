@@ -8,7 +8,10 @@ export async function createCreative(payload: any) {
 }
 
 export async function getCreative(req: Request) {
-  return Creative.find({}, null, queryGenerator(req));
+  const { campaignId } = req.query;
+  const query: any = {};
+  if (campaignId) query.campaignId = campaignId;
+  return Creative.find(query, null, queryGenerator(req));
 }
 
 export async function deleteCreative(id: string) {

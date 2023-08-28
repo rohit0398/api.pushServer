@@ -5,11 +5,12 @@ const creativeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  body: String,
+  campaignId: { type: String, required: true },
   url: {
     type: String,
     required: true,
   },
+  body: String,
   buttonUrl: String,
   buttonTitle: String,
   previewImage: String,

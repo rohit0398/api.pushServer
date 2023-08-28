@@ -21,7 +21,7 @@ export async function handleCreateCreative(req: Request, res: Response) {
 
 export async function handleGetCreative(req: Request, res: Response) {
   try {
-    const creative = await getCreative(req.body);
+    const creative = await getCreative(req);
     res
       .status(200)
       .json({ data: creative, message: 'Creative fetched successfully' });
@@ -49,7 +49,7 @@ export async function handleUpdateCreative(req: Request, res: Response) {
     const updatedData = req.body;
 
     const data = await updateCreative({ id, updatedData });
-    return res.status(200).json({ message: 'Creative updated successfully' });
+    return res.status(200).json({ data, message: 'Creative updated successfully' });
   } catch (ex: any) {
     return res.status(500).json({
       message: ex?.message ?? 'Something went wrong! try again later',

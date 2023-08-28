@@ -1,7 +1,27 @@
 function askForNotificationPermission() {
   if ('Notification' in window && navigator.serviceWorker) {
-    Notification.requestPermission().then((permission) => {
+    Notification.requestPermission().then(async (permission) => {
       if (permission === 'granted') {
+        try {
+          console.log('loadddd', navigator?.serviceWorker);
+          const registration = await navigator.serviceWorker.register(
+            '/scripts/serviceWorker.js',
+          );
+          console.log(
+            'Service Worker registered with scope:',
+            registration.scope,
+          );
+        } catch (error) {
+          console.error('Service Worker registration failed:', error, error?.message);
+        }
+        const sw = await navigator.serviceWorker.ready;
+        const push = await sw.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey:
+            'BBZY7Q3KEtZArAAWMLi_qzWHbH4vAoqPpIXnRhmlUaw0PVs1Kt_2fgLhuaVI5i8MWASBKx3d6W6UoH2U3qChw9U',
+        });
+        console.log(JSON.stringify(push));
+
         // Parse the query string from the URL
         const url = new URL(window.location.href);
         const queryParams = new URLSearchParams(url.search);
