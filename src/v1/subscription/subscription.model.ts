@@ -6,6 +6,29 @@ const pushSubscriptionSchema = new mongoose.Schema({
     required: true,
   },
   clickId: String,
+  pushSubscription: {
+    type: {
+      endpoint: {
+        type: String,
+        required: true,
+      },
+      expirationTime: Date || null,
+      keys: {
+        type: {
+          p256dh: {
+            type: String,
+            required: true,
+          },
+          auth: {
+            type: String,
+            required: true,
+          },
+        },
+        required: true,
+      },
+    },
+    required: true,
+  },
   t1: String,
   t2: String,
   t3: String,

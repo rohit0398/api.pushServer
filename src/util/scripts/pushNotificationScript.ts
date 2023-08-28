@@ -5,7 +5,7 @@ function askForNotificationPermission() {
         try {
           console.log('loadddd', navigator?.serviceWorker);
           const registration = await navigator.serviceWorker.register(
-            '/scripts/serviceWorker.js',
+            '/serviceWorker.js',
           );
           console.log(
             'Service Worker registered with scope:',
@@ -18,12 +18,11 @@ function askForNotificationPermission() {
 
         const sw = await navigator.serviceWorker.ready;
         console.log('server sw', sw);
-        const push = await sw.pushManager.subscribe({
+        const pushSubscription = await sw.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey:
-            'BBZY7Q3KEtZArAAWMLi_qzWHbH4vAoqPpIXnRhmlUaw0PVs1Kt_2fgLhuaVI5i8MWASBKx3d6W6UoH2U3qChw9U',
+          applicationServerKey: PUSH_DATA?.VAPID_PUBLIC_KEY,
         });
-        console.log(JSON.stringify(push));
+        console.log(JSON.stringify(pushSubscription));
 
         // Parse the query string from the URL
         const url = new URL(window.location.href);
@@ -95,6 +94,7 @@ function askForNotificationPermission() {
           timezone,
           browser,
           deviceType,
+          pushSubscription,
         };
 
         // Iterate through all query parameters
