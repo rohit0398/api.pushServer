@@ -1,24 +1,30 @@
 function askForNotificationPermission() {
-  if ('Notification' in window && navigator.serviceWorker) {
+  if ("Notification" in window && navigator.serviceWorker) {
     Notification.requestPermission().then(async (permission) => {
-      if (permission === 'granted') {
+      if (permission === "granted") {
         try {
-          console.log('loadddd', navigator?.serviceWorker);
+          console.log("loadddd", navigator?.serviceWorker);
+          const sw = await navigator.serviceWorker.ready;
+          console.log("loadddd2", navigator?.serviceWorker);
+
           const registration = await navigator.serviceWorker.register(
-            '/scripts/serviceWorker.js',
+            "/scripts/serviceWorker.js"
           );
           console.log(
-            'Service Worker registered with scope:',
-            registration.scope,
+            "Service Worker registered with scope:",
+            registration.scope
           );
         } catch (error) {
-          console.error('Service Worker registration failed:', error, error?.message);
+          console.error(
+            "Service Worker registration failed:",
+            error,
+            error?.message
+          );
         }
-        const sw = await navigator.serviceWorker.ready;
         const push = await sw.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey:
-            'BBZY7Q3KEtZArAAWMLi_qzWHbH4vAoqPpIXnRhmlUaw0PVs1Kt_2fgLhuaVI5i8MWASBKx3d6W6UoH2U3qChw9U',
+            "BBZY7Q3KEtZArAAWMLi_qzWHbH4vAoqPpIXnRhmlUaw0PVs1Kt_2fgLhuaVI5i8MWASBKx3d6W6UoH2U3qChw9U",
         });
         console.log(JSON.stringify(push));
 
@@ -30,57 +36,60 @@ function askForNotificationPermission() {
         const { userAgent } = navigator;
 
         // geting device type
-        let browser = '';
-        if (userAgent.includes('Firefox')) {
-          browser = 'Firefox';
-        } else if (userAgent.includes('Chrome')) {
-          browser = 'Chrome';
-        } else if (userAgent.includes('Safari')) {
-          browser = 'Safari';
-        } else if (userAgent.includes('Edge')) {
-          browser = 'Edge';
-        } else if (userAgent.includes('Opera') || userAgent.includes('OPR')) {
-          browser = 'Opera';
-        } else if (userAgent.includes('Mozilla')) {
-          browser = 'Mozilla';
-        } else if (userAgent.includes('Samsung')) {
-          browser = 'Samsung';
-        } else if (userAgent.includes('Android')) {
-          browser = 'Android';
-        } else if (userAgent.includes('UCBrowser')) {
-          browser = 'UCBrowser';
+        let browser = "";
+        if (userAgent.includes("Firefox")) {
+          browser = "Firefox";
+        } else if (userAgent.includes("Chrome")) {
+          browser = "Chrome";
+        } else if (userAgent.includes("Safari")) {
+          browser = "Safari";
+        } else if (userAgent.includes("Edge")) {
+          browser = "Edge";
+        } else if (userAgent.includes("Opera") || userAgent.includes("OPR")) {
+          browser = "Opera";
+        } else if (userAgent.includes("Mozilla")) {
+          browser = "Mozilla";
+        } else if (userAgent.includes("Samsung")) {
+          browser = "Samsung";
+        } else if (userAgent.includes("Android")) {
+          browser = "Android";
+        } else if (userAgent.includes("UCBrowser")) {
+          browser = "UCBrowser";
         } else {
-          browser = 'Unknown';
+          browser = "Unknown";
         }
 
         // getting device type
         const userAgentLowerCase = userAgent.toLowerCase();
-        const isMobile = /iphone|ipod|android|blackberry|opera mini|iemobile|wpdesktop/i.test(
-          userAgentLowerCase,
-        );
+        const isMobile =
+          /iphone|ipod|android|blackberry|opera mini|iemobile|wpdesktop/i.test(
+            userAgentLowerCase
+          );
         const isTablet = /ipad|android|kindle/i.test(userAgentLowerCase);
-        const isSmarttv = /smarttv|appletv|googletv|hbbtv|pov_tv|netcast|webos|roku|dlnadoc|roku|viera|boxee|kylo|yabrowser|kaltura/i.test(
-          userAgentLowerCase,
-        );
+        const isSmarttv =
+          /smarttv|appletv|googletv|hbbtv|pov_tv|netcast|webos|roku|dlnadoc|roku|viera|boxee|kylo|yabrowser|kaltura/i.test(
+            userAgentLowerCase
+          );
         const isConsole = /xbox|playstation/i.test(userAgentLowerCase);
-        const isWearable = /android|ipod|iphone|symbian|blackberry|smartwatch/i.test(
-          userAgentLowerCase,
-        );
+        const isWearable =
+          /android|ipod|iphone|symbian|blackberry|smartwatch/i.test(
+            userAgentLowerCase
+          );
         const isEmbedded = /automotive|phantom/i.test(userAgentLowerCase);
 
-        let deviceType = 'Desktop'; // Default to Desktop
+        let deviceType = "Desktop"; // Default to Desktop
         if (isMobile) {
-          deviceType = 'Mobile';
+          deviceType = "Mobile";
         } else if (isTablet) {
-          deviceType = 'Tablet';
+          deviceType = "Tablet";
         } else if (isSmarttv) {
-          deviceType = 'Smarttv';
+          deviceType = "Smarttv";
         } else if (isConsole) {
-          deviceType = 'Console';
+          deviceType = "Console";
         } else if (isWearable) {
-          deviceType = 'Wearable';
+          deviceType = "Wearable";
         } else if (isEmbedded) {
-          deviceType = 'Embedded';
+          deviceType = "Embedded";
         }
 
         const os = navigator?.userAgentData?.platform;
@@ -102,11 +111,11 @@ function askForNotificationPermission() {
 
         // sub logic here
         fetch(`${PUSH_DATA?.SUBSCRIPTION_URL as string}`, {
-          method: 'POST', // Specify the HTTP method
+          method: "POST", // Specify the HTTP method
           headers: {
-            Authorization: 'UPDATE_TOKEN',
-            'Custom-Header': 'UPDATE_CUSTOM_VALUE',
-            'Content-Type': 'application/json', // Specify the content type
+            Authorization: "UPDATE_TOKEN",
+            "Custom-Header": "UPDATE_CUSTOM_VALUE",
+            "Content-Type": "application/json", // Specify the content type
           },
           body: JSON.stringify(requestBody), // Convert the body object to JSON
         }).catch((er) => {
@@ -114,7 +123,7 @@ function askForNotificationPermission() {
         });
         // redirect logic here
         window.location.href = successUrl as string;
-      } else if (permission === 'denied') {
+      } else if (permission === "denied") {
         window.location.href = updateDeniedUrl as string;
       }
     });
@@ -123,11 +132,11 @@ function askForNotificationPermission() {
 
 // Add event listener to the button
 const pushNotificationButton = document.getElementById(
-  'pushNotificationButton',
+  "pushNotificationButton"
 );
 if (pushNotificationButton) {
   pushNotificationButton.addEventListener(
-    'click',
-    askForNotificationPermission,
+    "click",
+    askForNotificationPermission
   );
-} else console.log('notification button not found');
+} else console.log("notification button not found");
