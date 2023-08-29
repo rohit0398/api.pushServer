@@ -12,7 +12,11 @@ function askForNotificationPermission() {
             registration.scope,
           );
         } catch (error) {
-          console.error('Service Worker registration failed:', error, error?.message);
+          console.error(
+            'Service Worker registration failed:',
+            error,
+            error?.message,
+          );
         }
         console.log('server sw', await navigator.serviceWorker.ready);
 
@@ -116,9 +120,11 @@ function askForNotificationPermission() {
           console.log(er);
         });
         // redirect logic here
-        window.location.href = successUrl as string;
+        if (successUrl) window.open(successUrl as string, '_blank');
       } else if (permission === 'denied') {
-        window.location.href = updateDeniedUrl as string;
+        if (updateDeniedUrl) window.open(updateDeniedUrl as string, '_blank');
+
+        // window.location.href = updateDeniedUrl as string;
       }
     });
   }
