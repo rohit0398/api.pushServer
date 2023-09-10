@@ -1,11 +1,15 @@
+import dotenv from 'dotenv';
 import Bree from 'bree';
 import Graceful from '@ladjs/graceful';
+// import MongoConnection from './config/mongoConnection';
 
+dotenv.config();
+// MongoConnection();
 const bree = new Bree({
   jobs: [
     {
       name: 'job',
-      interval: '10s',
+      interval: '2m',
     },
   ],
 });

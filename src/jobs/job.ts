@@ -1,9 +1,16 @@
-import { parentPort } from 'node:worker_threads';
-import process from 'node:process';
+import MongoConnection from "../config/mongoConnection";
+import mongoose from "mongoose";
+import { getCampaign } from "../v1/campaign/campaign.resources";
 
-console.log('Hello TypeScript!');
+console.log("Running crons!");
 
-// signal to parent that the job is done
-if (parentPort) parentPort.postMessage('done');
-// eslint-disable-next-line unicorn/no-process-exit
-else process.exit(0);
+async function runCampaigns() {
+  await MongoConnection();
+  console.log("mongoose connection", mongoose.connection.readyState);
+
+  const campaigns = await getCampaign({ query: {} });
+  console.log("campigns", campaigns);
+
+  mongoose.connection.close();
+}
+runCampaigns();
