@@ -1,15 +1,15 @@
-import MongoConnection from "../config/mongoConnection";
-import mongoose from "mongoose";
-import { getCampaign } from "../v1/campaign/campaign.resources";
+import mongoose from 'mongoose';
+import MongoConnection from '../config/mongoConnection';
+import { getCampaign } from '../v1/campaign/campaign.resources';
 
-console.log("Running crons!");
+console.log('Running crons!');
 
 async function runCampaigns() {
-  await MongoConnection();
-  console.log("mongoose connection", mongoose.connection.readyState);
+  if (mongoose.connection.readyState === 0) await MongoConnection();
+  console.log('mongoose connection', mongoose.connection.readyState);
 
   const campaigns = await getCampaign({ query: {} });
-  console.log("campigns", campaigns);
+  console.log('campigns', campaigns);
 
   mongoose.connection.close();
 }
