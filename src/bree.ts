@@ -9,7 +9,7 @@ const bree = new Bree({
   jobs: [
     {
       name: 'job',
-      interval: '2m',
+      interval: '1m',
     },
   ],
 });
@@ -20,3 +20,5 @@ graceful.listen();
 
 // start all jobs (this is the equivalent of reloading a crontab):
 bree.start();
+
+export default bree;

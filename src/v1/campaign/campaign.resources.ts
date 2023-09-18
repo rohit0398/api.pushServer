@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { queryGenerator } from '../../util/helper';
 import Campaign from './campaign.model';
 
@@ -21,4 +22,9 @@ export async function updateCampaign({
   updatedData: any;
 }) {
   return Campaign.findByIdAndUpdate(id, updatedData, { new: true });
+}
+
+export async function getCampaignCron(findQuery: any, pagingQuery: any) {
+  mongoose.set('debug', true);
+  return Campaign.find(findQuery, null, queryGenerator(pagingQuery));
 }
