@@ -10,6 +10,7 @@ console.log('Running crons!');
 
 export default async function runCampaigns() {
   if (mongoose.connection.readyState === 0) await MongoConnection();
+  console.log('sub run');
   console.log('mongoose connection', mongoose.connection.readyState);
 
   const vapidKeys = {

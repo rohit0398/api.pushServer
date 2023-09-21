@@ -44,6 +44,7 @@ export async function handleSendNotificaiton(req: Request, res: Response) {
     //     }
     //   }
     // }
+    console.log('subsc run');
     runCampaigns();
     res.status(200).json({ message: 'Notification sent successfully' });
   } catch (ex: any) {

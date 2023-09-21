@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install && rimraf dist && babel src --extensions .ts --out-dir dist  --copy-files --source-maps",
-    "start": "node dist/app.js && node dist/bree.js",
+    "start": "node dist/app.js",
     "dev": "nodemon --exec babel-node src/app.ts --extensions .ts --source-maps",
     "check-lint": "eslint . --ext ts --ext tsx --ext js --fix",
     "start:pm2": "pm2 start npm --name api.pushserver -- start"
