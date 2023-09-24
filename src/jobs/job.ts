@@ -121,7 +121,8 @@ export default async function runCampaigns() {
     });
 
     if (Array.isArray(subscriptions) && subscriptions.length) {
-      let findCreatives = creatives.filter((val) => campaign?.creative?.includes(val?._id));
+      let findCreatives = creatives.filter((val) => campaign?._id.equals(val?.campaignId));
+
       if (findCreatives.length === 0) findCreatives = creatives;
       const choosedCreative = findCreatives[random(0, findCreatives.length - 1)];
 

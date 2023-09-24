@@ -13,31 +13,34 @@ let dirname: any = __dirname;
 const dist = dirname.split('dist');
 const src = dirname.split('src');
 
-console.log('abdsf', dist, src);
 if (Array.isArray(dist) && dist.length === 2) dirname = dist[0];
 else dirname = src[0];
 
 export async function handleCreateCreative(req: Request, res: Response) {
   try {
     const { body, files } = req;
-    const icon = files.icon[0] as any;
-    const image = files.image[0] as any;
-
     const uniquePrefix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const iconName = `${body.campaignId}-${uniquePrefix}-${icon?.originalname}`;
-    const imageName = `${body.campaignId}-${uniquePrefix}-${image?.originalname}`;
 
-    console.log('dirname', dirname, `${dirname}public/icons/${iconName}`);
-    await fs.writeFile(
-      `${dirname}public/icons/${iconName}`,
-      icon?.buffer as any,
-    );
-    await fs.writeFile(
-      `${dirname}public/images/${imageName}`,
-      image?.buffer as any,
-    );
-    body.icon = `/icons/${iconName}`;
-    body.image = `/images/${imageName}`;
+    const icon = files?.icon && (files?.icon[0] as any);
+    const image = files?.image && (files?.image[0] as any);
+
+    if (icon) {
+      const iconName = `${body.campaignId}-${uniquePrefix}-${icon?.originalname}`;
+      await fs.writeFile(
+        `${dirname}public/icons/${iconName}`,
+        icon?.buffer as any,
+      );
+      body.icon = `/icons/${iconName}`;
+    }
+
+    if (image) {
+      const imageName = `${body.campaignId}-${uniquePrefix}-${image?.originalname}`;
+      await fs.writeFile(
+        `${dirname}public/images/${imageName}`,
+        image?.buffer as any,
+      );
+      body.image = `/images/${imageName}`;
+    }
 
     const creative = await createCreative(body);
     res
@@ -78,10 +81,36 @@ export async function handleDeleteCreative(req: Request, res: Response) {
 
 export async function handleUpdateCreative(req: Request, res: Response) {
   try {
-    const { id } = req.params;
-    const updatedData = req.body;
+    const {
+      body,
+      files,
+      params: { id },
+    } = req;
 
-    const data = await updateCreative({ id, updatedData });
+    const uniquePrefix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+
+    const icon = files?.icon && (files?.icon[0] as any);
+    const image = files?.image && (files?.image[0] as any);
+
+    if (icon) {
+      const iconName = `${body.campaignId}-${uniquePrefix}-${icon?.originalname}`;
+      await fs.writeFile(
+        `${dirname}public/icons/${iconName}`,
+        icon?.buffer as any,
+      );
+      body.icon = `/icons/${iconName}`;
+    }
+
+    if (image) {
+      const imageName = `${body.campaignId}-${uniquePrefix}-${image?.originalname}`;
+      await fs.writeFile(
+        `${dirname}public/images/${imageName}`,
+        image?.buffer as any,
+      );
+      body.image = `/images/${imageName}`;
+    }
+
+    const data = await updateCreative({ id, updatedData: body });
     return res
       .status(200)
       .json({ data, message: 'Creative updated successfully' });

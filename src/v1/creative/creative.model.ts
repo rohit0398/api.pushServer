@@ -6,7 +6,7 @@ const creativeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    campaignId: { type: String, required: true },
+    campaignId: { type: mongoose.Schema.Types.ObjectId, required: true },
     url: {
       type: String,
       required: true,
@@ -16,13 +16,8 @@ const creativeSchema = new mongoose.Schema(
     buttonTitle: String,
     icon: { type: String, get: obfuscate },
     image: { type: String, get: obfuscate },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: Date,
   },
-  { toJSON: { getters: true } },
+  { toJSON: { getters: true }, timestamps: true },
 );
 
 // Mongoose passes the raw value in MongoDB `email` to the getter
