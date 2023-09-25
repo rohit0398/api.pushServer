@@ -32,7 +32,7 @@ export async function handleGetSubscribeAnalytics(req: Request, res: Response) {
     const interval = 1;
 
     const dataPromises = [];
-    const dates = [];
+    const datesInterval:any = [];
     for (let i = 0; i < numberOfDays; i++) {
       const fromDate = new Date(
         currentDate.getTime() - i * interval * 24 * 60 * 60 * 1000,
@@ -46,7 +46,7 @@ export async function handleGetSubscribeAnalytics(req: Request, res: Response) {
           type: ['ACTIVE', 'UNACTIVE'],
         }),
       );
-      dates.push(fromDate.toISOString().substring(0, 10));
+      datesInterval.push(fromDate.toISOString().substring(0, 10));
     }
 
     dataPromises.push(
@@ -66,34 +66,29 @@ export async function handleGetSubscribeAnalytics(req: Request, res: Response) {
     const promises = await Promise.all(dataPromises);
     const data: any = {};
     data.active = promises.pop();
-    data.last14days = promises.pop();
-    data.dates = [
-      {
-        name: dates[0],
-        subscriptions: (promises[0][1] && promises[0][1].count) ?? 0,
-        unsubscriptions: (promises[0][0] && promises[0][0].count) ?? 0,
-      },
-      {
-        name: dates[1],
-        subscriptions: (promises[1][1] && promises[1][1].count) ?? 0,
-        unsubscriptions: (promises[1][0] && promises[1][0].count) ?? 0,
-      },
-      {
-        name: dates[2],
-        subscriptions: (promises[2][1] && promises[2][1].count) ?? 0,
-        unsubscriptions: (promises[2][0] && promises[2][0].count) ?? 0,
-      },
-      {
-        name: dates[3],
-        subscriptions: (promises[3][1] && promises[3][1].count) ?? 0,
-        unsubscriptions: (promises[3][0] && promises[3][0].count) ?? 0,
-      },
-      {
-        name: dates[4],
-        subscriptions: (promises[4][1] && promises[4][1].count) ?? 0,
-        unsubscriptions: (promises[4][0] && promises[4][0].count) ?? 0,
-      },
-    ];
+    const last14daysData = promises.pop();
+    const last14days: any = {};
+    const dates: any = [];
+    if (Array.isArray(last14daysData)) {
+      for (const days of last14daysData) {
+        last14days[
+          days._id === 'ACTIVE' ? 'subscriptions' : 'unsubscriptions'
+        ] = days.count;
+      }
+    }
+    data.last14days = last14days;
+
+    promises.forEach((val, ind) => {
+      dates.push({
+        name: datesInterval[ind],
+        ...val.reduce((acc, item) => {
+          acc[item._id === 'ACTIVE' ? 'subscriptions' : 'unsubscriptions'] = item.count;
+          return acc;
+        }, {}),
+      });
+    });
+
+    data.dates = dates;
 
     return res
       .status(200)

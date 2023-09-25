@@ -11,6 +11,9 @@ export async function getSubscriptions(req: any) {
 }
 
 export async function getSubscriptionsCron(findQuery: any, pagingQuery: any) {
-  mongoose.set('debug', true);
   return Subscription.find(findQuery, null, queryGenerator(pagingQuery));
+}
+
+export async function updateSubscription(filter: any, update: any) {
+  return Subscription.updateMany(filter, update);
 }
