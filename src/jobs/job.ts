@@ -104,7 +104,7 @@ export default async function runCampaigns() {
       }
 
       const createdAt: any = {};
-      const now = new Date();
+      const now: any = new Date();
       if (campaign?.subscriptionFrom) {
         createdAt.$lt = new Date(
           now - campaign?.subscriptionFrom * 60 * 60 * 1000,
@@ -171,9 +171,11 @@ export default async function runCampaigns() {
     }
 
     console.log('campigns', campaigns);
-  } catch (ex) {
+  } catch (ex: any) {
     console.log('ex', ex);
+    process.exit(0);
   }
+  process.exit(0);
   // mongoose.connection.close();
 }
 
