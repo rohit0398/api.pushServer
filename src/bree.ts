@@ -12,6 +12,19 @@ const bree = new Bree({
       interval: '30m',
     },
   ],
+  errorHandler: (error, workerMetadata) => {
+    // workerMetadata will be populated with extended worker information only if
+    // Bree instance is initialized with parameter `workerMetadata: true`
+    if (workerMetadata.threadId) {
+      console.log(
+        `There was an error while running a worker ${workerMetadata.name} with thread ID: ${workerMetadata.threadId}`,
+      );
+    } else {
+      console.log(
+        `There was an error while running a worker ${workerMetadata.name}`,
+      );
+    }
+  },
 });
 
 // handle graceful reloads, pm2 support, and events like SIGHUP, SIGINT, etc.

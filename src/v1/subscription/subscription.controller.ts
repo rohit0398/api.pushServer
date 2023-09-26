@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import WebPush from 'web-push';
-import runCampaigns from '../../jobs/job';
+// import runCampaigns from '../../jobs/job';
 import { getCreative } from '../creative/creative.resources';
 import { createSubscription, getSubscriptions } from './subscription.resources';
 
@@ -45,7 +45,7 @@ export async function handleSendNotificaiton(req: Request, res: Response) {
     //   }
     // }
     console.log('subsc run');
-    runCampaigns();
+    // runCampaigns();
     res.status(200).json({ message: 'Notification sent successfully' });
   } catch (ex: any) {
     return res.status(500).json({

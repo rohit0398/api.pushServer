@@ -1,20 +1,22 @@
 import mongoose from 'mongoose';
 import WebPush from 'web-push';
 import { random } from 'lodash';
+import parentPort from 'worker_threads';
+import MongoConnection from '../config/mongoConnection';
 import {
   getSubscriptionsCron,
   updateSubscription,
 } from '../v1/subscription/subscription.resources';
-import MongoConnection from '../config/mongoConnection';
 import { getCampaignCron } from '../v1/campaign/campaign.resources';
 import { getCreative } from '../v1/creative/creative.resources';
 import { createCampaignAnalytics } from '../v1/analytics/analytics.resources';
 
 console.log('Running crons!');
 
-export default async function runCampaigns() {
+(async () => {
+  console.log('inside run campaign');
   if (mongoose.connection.readyState === 0) await MongoConnection();
-  console.log('sub run');
+
   console.log('mongoose connection', mongoose.connection.readyState);
 
   const vapidKeys = {
@@ -143,6 +145,7 @@ export default async function runCampaigns() {
       }
 
       const res = await Promise.allSettled(promises);
+      console.log('hello', res);
 
       const unactiveIds: any = [];
       let sentCount = 0;
@@ -151,23 +154,35 @@ export default async function runCampaigns() {
         if (val.status === 'fulfilled') sentCount += 1;
         else if (val.status === 'rejected') unactiveIds.push(subscriptions[ind]._id);
       });
+
+      const operationsPromises: any = [];
       if (sentCount) {
-        createCampaignAnalytics({
-          campaignId: campaign?._id,
-          count: sentCount,
-          type: 'SENT',
-        });
+        operationsPromises.push(
+          createCampaignAnalytics({
+            campaignId: campaign?._id,
+            count: sentCount,
+            type: 'SENT',
+          }),
+        );
       }
 
       if (unactiveIds.length) {
-        updateSubscription({ _id: { $in: unactiveIds } }, { type: 'UNACTIVE' });
+        operationsPromises.push(
+          updateSubscription(
+            { _id: { $in: unactiveIds } },
+            { type: 'UNACTIVE' },
+          ),
+        );
       }
-      console.log('hello', res);
+
+      await Promise.allSettled(operationsPromises);
+      console.log('at the end!');
     }
   }
 
-  console.log('campigns', campaigns);
-  // mongoose.connection.close();
-}
-
-runCampaigns();
+  console.log('campaign', campaigns);
+  // throw Error("error in code");
+  // signal to parent that the job is done
+  if (parentPort) parentPort.postMessage('done');
+  else process.exit(0);
+})();
