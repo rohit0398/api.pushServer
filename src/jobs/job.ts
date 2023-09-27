@@ -14,7 +14,6 @@ import { createCampaignAnalytics } from '../v1/analytics/analytics.resources';
 console.log('Running crons!');
 
 (async () => {
-  console.log('inside run campaign');
   if (mongoose.connection.readyState === 0) await MongoConnection();
 
   console.log('mongoose connection', mongoose.connection.readyState);

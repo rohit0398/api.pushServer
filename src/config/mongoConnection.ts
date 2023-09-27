@@ -8,11 +8,7 @@ export async function MongoConnection() {
   try {
     console.log('mongoose connection', mongoose.connection.readyState);
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(
-        (process.env.CONNECTION_STRING as string)
-          ?? 'mongodb+srv://rkkb7828131:ZGElfyRyDY75KOA0@cluster0.bnasbhp.mongodb.net/?retryWrites=true&w=majority',
-        config,
-      );
+      await mongoose.connect(process.env.CONNECTION_STRING as string, config);
     }
     console.log('db connected');
     console.log('mongoose connection', mongoose.connection.readyState);

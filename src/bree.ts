@@ -1,11 +1,13 @@
-import dotenv from 'dotenv';
 import Bree from 'bree';
 import Graceful from '@ladjs/graceful';
-// import MongoConnection from './config/mongoConnection';
 
-dotenv.config();
-// MongoConnection();
 const bree = new Bree({
+  worker: {
+    env: {
+      CONNECTION_STRING: 'mongodb+srv://rkkb7828131:ZGElfyRyDY75KOA0@cluster0.bnasbhp.mongodb.net/?retryWrites=true&w=majority',
+      API_URL: 'https://api.vibesender.com',
+    },
+  },
   jobs: [
     {
       name: 'job',
