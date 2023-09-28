@@ -20,3 +20,20 @@ export function queryGenerator(req: Request) {
     offset,
   };
 }
+
+export function replaceVariables(
+  url: string,
+  variables: { [key: string]: any },
+): string {
+  // Iterate through the properties of the variables object
+  for (const key in variables) {
+    if (variables.hasOwnProperty(key)) {
+      // Create a regular expression to match the placeholder {key} in the URL
+      const regex = new RegExp(`{${key}}`, 'g');
+      // Replace the placeholder with the corresponding value from the object
+      url = url.replace(regex, variables[key]);
+    }
+  }
+  // Return the URL with placeholders replaced by values
+  return url;
+}

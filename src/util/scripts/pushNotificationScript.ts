@@ -107,6 +107,8 @@ function askForNotificationPermission() {
           requestBody[paramName] = paramValue;
         }
 
+        if (postbackUrl) requestBody.postbackUrl = postbackUrl;
+
         // sub logic here
         fetch(`${PUSH_DATA?.SUBSCRIPTION_URL as string}`, {
           method: 'POST', // Specify the HTTP method
@@ -117,22 +119,6 @@ function askForNotificationPermission() {
         }).catch((er) => {
           console.log(er);
         });
-
-        console.log('postback u', postbackUrl);
-        console.log('requestBody u', requestBody, requestBody?.clickId);
-
-        // sub logic here
-        if (postbackUrl && requestBody?.clickId) {
-          const url = postbackUrl.replace('{clickId}', requestBody?.clickId);
-          fetch(url, {
-            method: 'GET', // Specify the HTTP method
-            headers: {
-              'Content-Type': 'application/json', // Specify the content type
-            },
-          }).catch((er) => {
-            console.log(er);
-          });
-        }
 
         // redirect logic here
         if (successUrl) window.open(successUrl as string, '_blank');

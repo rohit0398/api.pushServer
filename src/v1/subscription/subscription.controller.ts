@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import axios from 'axios';
 import WebPush from 'web-push';
 // import runCampaigns from '../../jobs/job';
 import { getCreative } from '../creative/creative.resources';
@@ -12,7 +13,18 @@ export const vapidKeys = {
 
 export async function handleCreateSubscription(req: Request, res: Response) {
   try {
-    await createSubscription(req.body);
+    const { body } = req;
+    const promises: any = [];
+    promises.push(createSubscription(body));
+
+    // hitting postback url if exists
+    const { postbackUrl, clickId }: any = body ?? {};
+    if (postbackUrl && clickId) {
+      const url = postbackUrl.replace('{clickId}', clickId);
+      promises.push(axios.get(url));
+    }
+    await Promise.allSettled(promises);
+
     res.status(200).json({ message: 'Subscription created successfully' });
   } catch (ex: any) {
     return res.status(500).json({

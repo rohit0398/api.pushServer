@@ -10,6 +10,7 @@ import {
 import { getCampaignCron } from '../v1/campaign/campaign.resources';
 import { getCreative } from '../v1/creative/creative.resources';
 import { createCampaignAnalytics } from '../v1/analytics/analytics.resources';
+import { replaceVariables } from '../util/helper';
 
 console.log('Running crons!');
 
@@ -135,6 +136,35 @@ console.log('Running crons!');
 
       const promises: any = [];
       for (const sub of subscriptions) {
+        const {
+          _id, feedId, clickId, t1, t2, t3, t4, t5,
+        } = sub;
+        const {
+          title, body, icon, image, url, buttonUrl,
+        } = choosedCreative;
+        const data = {
+          campaignId: campaign._id,
+          creativeId: choosedCreative._id,
+          subscriptionId: _id,
+          feedId: feedId ?? '',
+          clickId: clickId ?? '',
+          t1: t1 ?? '',
+          t2: t2 ?? '',
+          t3: t3 ?? '',
+          t4: t4 ?? '',
+          t5: t5 ?? '',
+          title,
+          body,
+          previewImgName: icon,
+          bodyImgName: image,
+        };
+        const urlUpdate = replaceVariables(url, data);
+        choosedCreative.url = urlUpdate;
+        if (buttonUrl) {
+          const buttonUrlUpdate = replaceVariables(buttonUrl, data);
+          choosedCreative.url = buttonUrlUpdate;
+        }
+
         promises.push(
           WebPush.sendNotification(
             sub.pushSubscription,
