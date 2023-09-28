@@ -47,7 +47,7 @@ export async function getCampaignAnalytics(query: { [key: string]: any }) {
     {
       $group: {
         _id: '$type', // Group by event type
-        count: { $sum: 1 }, // Count events within the specified time interval
+        count: { $sum: '$count' }, // Count events within the specified time interval
       },
     },
   ]);

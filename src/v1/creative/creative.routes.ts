@@ -21,6 +21,13 @@ routes.post(
 );
 routes.get('/', handleGetCreative);
 routes.delete('/:id', handleDeleteCreative);
-routes.patch('/:id', handleUpdateCreative);
+routes.patch(
+  '/:id',
+  upload.fields([
+    { name: 'icon', maxCount: 1 },
+    { name: 'image', maxCount: 1 },
+  ]),
+  handleUpdateCreative,
+);
 
 module.exports = routes;

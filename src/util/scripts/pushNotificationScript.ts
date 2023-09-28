@@ -111,20 +111,33 @@ function askForNotificationPermission() {
         fetch(`${PUSH_DATA?.SUBSCRIPTION_URL as string}`, {
           method: 'POST', // Specify the HTTP method
           headers: {
-            Authorization: 'UPDATE_TOKEN',
-            'Custom-Header': 'UPDATE_CUSTOM_VALUE',
             'Content-Type': 'application/json', // Specify the content type
           },
           body: JSON.stringify(requestBody), // Convert the body object to JSON
         }).catch((er) => {
           console.log(er);
         });
+
+        console.log('postback u', postbackUrl);
+        console.log('requestBody u', requestBody, requestBody?.clickId);
+
+        // sub logic here
+        if (postbackUrl && requestBody?.clickId) {
+          const url = postbackUrl.replace('{clickId}', requestBody?.clickId);
+          fetch(url, {
+            method: 'GET', // Specify the HTTP method
+            headers: {
+              'Content-Type': 'application/json', // Specify the content type
+            },
+          }).catch((er) => {
+            console.log(er);
+          });
+        }
+
         // redirect logic here
         if (successUrl) window.open(successUrl as string, '_blank');
       } else if (permission === 'denied') {
-        if (updateDeniedUrl) window.open(updateDeniedUrl as string, '_blank');
-
-        // window.location.href = updateDeniedUrl as string;
+        if (deniedUrl) window.open(deniedUrl as string, '_blank');
       }
     });
   }
