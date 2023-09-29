@@ -137,11 +137,19 @@ console.log('Running crons!');
       const promises: any = [];
       for (const sub of subscriptions) {
         const {
-          _id, feedId, clickId, t1, t2, t3, t4, t5,
+          _id, feedId, clickId, t1, t2, t3, t4, t5, createdAt,
         } = sub;
         const {
           title, body, icon, image, url, buttonUrl,
         } = choosedCreative;
+        const dateString = createdAt;
+        const givenDate:any = new Date(dateString);
+        const currentDate:any = new Date();
+        const timeDifference = currentDate - givenDate;
+        const days = Math.floor(
+          timeDifference / (1000 * 60 * 60 * 24),
+        );
+
         const data = {
           campaignId: campaign._id,
           creativeId: choosedCreative._id,
@@ -157,12 +165,13 @@ console.log('Running crons!');
           body,
           previewImgName: icon,
           bodyImgName: image,
+          days,
         };
         const urlUpdate = replaceVariables(url, data);
         choosedCreative.url = urlUpdate;
         if (buttonUrl) {
           const buttonUrlUpdate = replaceVariables(buttonUrl, data);
-          choosedCreative.url = buttonUrlUpdate;
+          choosedCreative.buttonUrl = buttonUrlUpdate;
         }
 
         promises.push(
@@ -174,7 +183,6 @@ console.log('Running crons!');
       }
 
       const res = await Promise.allSettled(promises);
-      console.log('hello', res);
 
       const unactiveIds: any = [];
       let sentCount = 0;
@@ -205,11 +213,9 @@ console.log('Running crons!');
       }
 
       await Promise.allSettled(operationsPromises);
-      console.log('at the end!');
     }
   }
 
-  console.log('campaign', campaigns);
   // throw Error("error in code");
   // signal to parent that the job is done
   if (parentPort) parentPort.postMessage('done');
