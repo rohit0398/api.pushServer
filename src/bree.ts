@@ -11,7 +11,7 @@ const bree = new Bree({
   jobs: [
     {
       name: 'job',
-      interval: '30s',
+      interval: '30m',
     },
   ],
   errorHandler: (error, workerMetadata) => {
