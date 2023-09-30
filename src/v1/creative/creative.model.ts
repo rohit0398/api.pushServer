@@ -16,8 +16,13 @@ const creativeSchema = new mongoose.Schema(
     buttonTitle: String,
     icon: { type: String, get: obfuscate },
     image: { type: String, get: obfuscate },
+    status: {
+      type: String,
+      default: 'ACTIVE',
+      enum: ['ACTIVE', 'PAUSED'],
+    },
   },
-  { toJSON: { getters: true }, timestamps: true },
+  { toJSON: { getters: true, virtuals: false }, timestamps: true },
 );
 
 // Mongoose passes the raw value in MongoDB `email` to the getter

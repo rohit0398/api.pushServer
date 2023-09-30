@@ -16,6 +16,7 @@ export async function getSubscribeAnalytics(query: { [key: string]: any }) {
     };
   }
   if (query?.type) match.type = { $in: query.type };
+  if (query?.feedId) match.feedId = query.feedId;
 
   return Subscription.aggregate([
     {

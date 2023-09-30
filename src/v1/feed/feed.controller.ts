@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import { getSubscribeAnalytics } from '../analytics/analytics.resources';
 import {
   createFeed, deleteFeed, getFeeds, updateFeed,
 } from './feed.resources';
@@ -16,7 +18,27 @@ export async function handleCreateFeed(req: Request, res: Response) {
 
 export async function handleGetFeeds(req: Request, res: Response) {
   try {
-    const data = await getFeeds(req);
+    let data: any = await getFeeds(req);
+
+    const dataPromises: any = [];
+    if (Array.isArray(data)) {
+      data = JSON.parse(JSON.stringify(data));
+      for (const feed of data) {
+        dataPromises.push(
+          getSubscribeAnalytics({
+            type: ['ACTIVE'],
+            feedId: new mongoose.Types.ObjectId(feed._id),
+          }),
+        );
+      }
+      const promises = await Promise.all(dataPromises);
+      data = data.map((val, ind) => {
+        let count = 0;
+        if (promises[ind] && promises[ind][0]) count = promises[ind][0]?.count ?? 0;
+        return { ...val, count };
+      });
+    }
+
     return res.status(200).json({ data, message: 'Feed fetched successfully' });
   } catch (ex: any) {
     return res.status(500).json({
