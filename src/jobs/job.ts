@@ -71,7 +71,7 @@ console.log('Running crons!');
     { query: {} },
   );
 
-  const creatives = await getCreative({ query: {} } as any);
+  const creatives = await getCreative({ query: { status: 'ACTIVE' } } as any);
 
   for (const campaign of campaigns) {
     // Convert the filter criteria to lowercase for case-insensitive matching
@@ -143,12 +143,10 @@ console.log('Running crons!');
           title, body, icon, image, url, buttonUrl,
         } = choosedCreative;
         const dateString = createdAt;
-        const givenDate:any = new Date(dateString);
-        const currentDate:any = new Date();
+        const givenDate: any = new Date(dateString);
+        const currentDate: any = new Date();
         const timeDifference = currentDate - givenDate;
-        const days = Math.floor(
-          timeDifference / (1000 * 60 * 60 * 24),
-        );
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
         const data = {
           campaignId: campaign._id,

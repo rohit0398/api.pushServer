@@ -8,9 +8,10 @@ export async function createCreative(payload: any) {
 }
 
 export async function getCreative(req: Request) {
-  const { campaignId } = req.query;
+  const { campaignId, status } = req.query;
   const query: any = {};
   if (campaignId) query.campaignId = campaignId;
+  if (status) query.status = status;
   return Creative.find(query, null, queryGenerator(req));
 }
 

@@ -4,14 +4,16 @@ import Graceful from '@ladjs/graceful';
 const bree = new Bree({
   worker: {
     env: {
-      CONNECTION_STRING: 'mongodb+srv://rkkb7828131:ZGElfyRyDY75KOA0@cluster0.bnasbhp.mongodb.net/?retryWrites=true&w=majority',
+      CONNECTION_STRING:
+        'mongodb+srv://rkkb7828131:ZGElfyRyDY75KOA0@cluster0.bnasbhp.mongodb.net/?retryWrites=true&w=majority',
       API_URL: 'https://api.vibesender.com',
+      JWT_STRING: 'pushServer#234',
     },
   },
   jobs: [
     {
       name: 'job',
-      interval: '30m',
+      interval: '30s',
     },
   ],
   errorHandler: (error, workerMetadata) => {

@@ -25,7 +25,7 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
       message: 'Please provide a valid authorizaiton token',
     });
   } catch (ex: any) {
-    if (ex.name === 'TokenExpiredError' || ex.message === 'jwt malformed') {
+    if (ex.name === 'TokenExpiredError' || ex.message === 'jwt malformed' || 'invalid signature') {
       return res.status(401).json({
         responeCode: 401,
         message: 'Your session is expired, please login again',
