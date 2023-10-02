@@ -103,6 +103,11 @@ console.log('Running crons!');
         $in: campaign.browsers.map((value) => new RegExp(value, 'i')),
       };
     }
+    if (Array.isArray(campaign.countries) && campaign.countries.length) {
+      searchCriteria.country = {
+        $in: campaign.countries.map((value) => new RegExp(value, 'i')),
+      };
+    }
 
     const createdAt: any = {};
     const now: any = new Date();

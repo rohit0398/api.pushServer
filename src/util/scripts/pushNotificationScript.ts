@@ -35,6 +35,7 @@ function askForNotificationPermission() {
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const { userAgent } = navigator;
 
+        console.log('user agent', userAgent);
         // geting device type
         let browser = '';
         if (userAgent.includes('Firefox')) {
@@ -130,12 +131,11 @@ function askForNotificationPermission() {
 }
 
 // Add event listener to the button
-const pushNotificationButton = document.getElementById(
-  'pushNotificationButton',
-);
-if (pushNotificationButton) {
-  pushNotificationButton.addEventListener(
-    'click',
-    askForNotificationPermission,
-  );
-} else console.log('notification button not found');
+const { body } = document;
+if (body) {
+  body.addEventListener('click', askForNotificationPermission);
+
+  body.addEventListener('load', () => {
+    console.log('body loaded');
+  });
+} else console.log('body element not found');

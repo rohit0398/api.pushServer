@@ -37,7 +37,7 @@ const pushSubscriptionSchema = new mongoose.Schema(
     t5: String,
     lang: String,
     os: String,
-    timezone: String,
+    country: String,
     browser: String,
     deviceType: String,
     type: {
