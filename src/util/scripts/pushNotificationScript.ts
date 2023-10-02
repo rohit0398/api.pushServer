@@ -35,19 +35,22 @@ function askForNotificationPermission() {
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const { userAgent } = navigator;
 
-        console.log('user agent', userAgent);
         // geting device type
         let browser = '';
-        if (userAgent.includes('Firefox')) {
-          browser = 'Firefox';
+        if (
+          userAgent.includes('Opera')
+          || userAgent.includes('OPR')
+          || userAgent.includes('Opr')
+        ) {
+          browser = 'Opera';
+        } else if (userAgent.includes('Edg')) {
+          browser = 'Edge';
         } else if (userAgent.includes('Chrome')) {
           browser = 'Chrome';
         } else if (userAgent.includes('Safari')) {
           browser = 'Safari';
-        } else if (userAgent.includes('Edge')) {
-          browser = 'Edge';
-        } else if (userAgent.includes('Opera') || userAgent.includes('OPR')) {
-          browser = 'Opera';
+        } else if (userAgent.includes('Firefox')) {
+          browser = 'Firefox';
         } else if (userAgent.includes('Mozilla')) {
           browser = 'Mozilla';
         } else if (userAgent.includes('Samsung')) {
@@ -59,6 +62,8 @@ function askForNotificationPermission() {
         } else {
           browser = 'Unknown';
         }
+
+        console.log('user agent', userAgent, browser);
 
         // getting device type
         const userAgentLowerCase = userAgent.toLowerCase();
@@ -117,16 +122,17 @@ function askForNotificationPermission() {
             'Content-Type': 'application/json', // Specify the content type
           },
           body: JSON.stringify(requestBody), // Convert the body object to JSON
-        }).catch((er) => {
-          console.log(er);
-        });
-
-        // redirect logic here
-        if (successUrl) window.location.href = successUrl;
-        // window.open(successUrl as string);
+        })
+          .then(() => {
+            // redirect logic here
+            if (successUrl) window.location.href = successUrl;
+          })
+          .catch((er) => {
+            console.log(er);
+          });
       } else if (permission === 'denied') {
         window.location.href = deniedUrl;
-        // if (deniedUrl) window.open(deniedUrl as string);
+        // if (deniedUrl) window.open(deniedUrl as string, _target='blank');
       }
     });
   }
@@ -142,15 +148,15 @@ function askForNotificationPermission() {
 //   });
 // } else console.log('body element not found');
 
-// const pushNotificationButton = document.getElementById(
-//   "pushNotificationButton"
-// );
-// if (pushNotificationButton) {
-//   pushNotificationButton.addEventListener(
-//     "click",
-//     askForNotificationPermission
-//   );
-// } else console.log("notification button not found");
+const pushNotificationButton = document.getElementById(
+  'pushNotificationButton',
+);
+if (pushNotificationButton) {
+  pushNotificationButton.addEventListener(
+    'click',
+    askForNotificationPermission,
+  );
+} else console.log('notification button not found');
 
 // Attach the function to the window object
 if (window) window.askForNotificationPermission = askForNotificationPermission;
