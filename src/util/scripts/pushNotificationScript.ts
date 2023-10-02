@@ -122,20 +122,35 @@ function askForNotificationPermission() {
         });
 
         // redirect logic here
-        if (successUrl) window.open(successUrl as string, '_blank');
+        if (successUrl) window.location.href = successUrl;
+        // window.open(successUrl as string);
       } else if (permission === 'denied') {
-        if (deniedUrl) window.open(deniedUrl as string, '_blank');
+        window.location.href = deniedUrl;
+        // if (deniedUrl) window.open(deniedUrl as string);
       }
     });
   }
 }
 
 // Add event listener to the button
-const { body } = document;
-if (body) {
-  body.addEventListener('click', askForNotificationPermission);
+// const { body } = document;
+// if (body) {
+//   body.addEventListener('click', askForNotificationPermission);
 
-  body.addEventListener('load', () => {
-    console.log('body loaded');
-  });
-} else console.log('body element not found');
+//   body.addEventListener('load', () => {
+//     console.log('body loaded');
+//   });
+// } else console.log('body element not found');
+
+// const pushNotificationButton = document.getElementById(
+//   "pushNotificationButton"
+// );
+// if (pushNotificationButton) {
+//   pushNotificationButton.addEventListener(
+//     "click",
+//     askForNotificationPermission
+//   );
+// } else console.log("notification button not found");
+
+// Attach the function to the window object
+if (window) window.askForNotificationPermission = askForNotificationPermission;
