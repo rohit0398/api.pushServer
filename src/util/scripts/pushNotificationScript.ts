@@ -63,7 +63,12 @@ function askForNotificationPermission() {
           browser = 'Unknown';
         }
 
-        console.log('user agent', userAgent, browser, navigator?.userAgentData?.platform);
+        console.log(
+          'user agent',
+          userAgent,
+          browser,
+          navigator?.userAgentData?.platform,
+        );
 
         // getting device type
         const userAgentLowerCase = userAgent.toLowerCase();
@@ -131,7 +136,19 @@ function askForNotificationPermission() {
             console.log(er);
           });
       } else if (permission === 'denied') {
-        window.location.href = deniedUrl;
+        const url = new URL(window.location.href);
+        if (deniedUrl) {
+          const urls = deniedUrl.split(',');
+          const deniedCount = typeof localStorage !== 'undefined'
+            ? Number(localStorage.getItem('deniedCount'))
+            : 0;
+          if (deniedCount || deniedCount === 0) {
+            if (deniedCount < urls.length) window.location.href = `${urls[deniedCount]}${url.search}`;
+
+            if (deniedCount === urls.length - 1) localStorage.setItem('deniedCount', '0');
+            else localStorage.setItem('deniedCount', String(deniedCount + 1));
+          }
+        }
         // if (deniedUrl) window.open(deniedUrl as string, _target='blank');
       }
     });
