@@ -176,6 +176,14 @@ console.log('Running crons!');
           const buttonUrlUpdate = replaceVariables(buttonUrl, data);
           choosedCreative.buttonUrl = buttonUrlUpdate;
         }
+        if (title) {
+          const titleUpdate = replaceVariables(title, data);
+          choosedCreative.title = titleUpdate;
+        }
+        if (body) {
+          const bodyUpdate = replaceVariables(body, data);
+          choosedCreative.body = bodyUpdate;
+        }
 
         promises.push(
           WebPush.sendNotification(

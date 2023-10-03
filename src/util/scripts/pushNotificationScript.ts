@@ -63,7 +63,7 @@ function askForNotificationPermission() {
           browser = 'Unknown';
         }
 
-        console.log('user agent', userAgent, browser);
+        console.log('user agent', userAgent, browser, navigator?.userAgentData?.platform);
 
         // getting device type
         const userAgentLowerCase = userAgent.toLowerCase();

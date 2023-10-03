@@ -27,7 +27,8 @@ const creativeSchema = new mongoose.Schema(
 
 // Mongoose passes the raw value in MongoDB `email` to the getter
 function obfuscate(path: string) {
-  return process.env.API_URL + path;
+  if (path) return process.env.API_URL + path;
+  path;
 }
 
 const Creative = mongoose.model('Creative', creativeSchema);
