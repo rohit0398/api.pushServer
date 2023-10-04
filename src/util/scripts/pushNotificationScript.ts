@@ -1,3 +1,25 @@
+(() => {
+  if ('Notification' in window) {
+    const notificationStatus = Notification.permission;
+
+    if (notificationStatus === 'granted' && successUrl) window.location.href = successUrl;
+    else if (notificationStatus === 'denied' && deniedUrl) {
+      const url = new URL(window.location.href);
+      const queryParams = new URLSearchParams(url.search) as any;
+      let denied = queryParams?.get('denied');
+      const urls = deniedUrl.split(',');
+      if (denied) denied = Number(denied) + 1;
+      else denied = 0;
+      if (denied || denied === 0) {
+        if (denied < urls.length) {
+          const splitUrl = url.search?.split('&denied=');
+          window.location.href = `${urls[denied]}${splitUrl[0]}&denied=${denied}`;
+        }
+      }
+    }
+  }
+})();
+
 function askForNotificationPermission() {
   if ('Notification' in window && navigator.serviceWorker) {
     Notification.requestPermission().then(async (permission) => {
@@ -137,16 +159,22 @@ function askForNotificationPermission() {
           });
       } else if (permission === 'denied') {
         const url = new URL(window.location.href);
+        const queryParams = new URLSearchParams(url.search) as any;
+        let denied = queryParams?.get('denied');
+        console.log('query par', queryParams, denied);
+
         if (deniedUrl) {
           const urls = deniedUrl.split(',');
-          const deniedCount = typeof localStorage !== 'undefined'
-            ? Number(localStorage.getItem('deniedCount'))
-            : 0;
-          if (deniedCount || deniedCount === 0) {
-            if (deniedCount < urls.length) window.location.href = `${urls[deniedCount]}${url.search}`;
+          if (denied) denied = Number(denied) + 1;
+          else denied = 0;
 
-            if (deniedCount === urls.length - 1) localStorage.setItem('deniedCount', '0');
-            else localStorage.setItem('deniedCount', String(deniedCount + 1));
+          console.log('denied', queryParams, urls, denied);
+
+          if (denied || denied === 0) {
+            if (denied < urls.length) {
+              const splitUrl = url.search?.split('&denied=');
+              window.location.href = `${urls[denied]}${splitUrl[0]}&denied=${denied}`;
+            }
           }
         }
         // if (deniedUrl) window.open(deniedUrl as string, _target='blank');
