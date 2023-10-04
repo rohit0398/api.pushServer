@@ -142,7 +142,20 @@ console.log('Running crons!');
       const promises: any = [];
       for (const sub of subscriptions) {
         const {
-          _id, feedId, clickId, t1, t2, t3, t4, t5, createdAt,
+          _id,
+          feedId,
+          clickId,
+          t1,
+          t2,
+          t3,
+          t4,
+          t5,
+          t6,
+          t7,
+          t8,
+          t9,
+          t10,
+          createdAt,
         } = sub;
         const {
           title, body, icon, image, url, buttonUrl,
@@ -164,6 +177,11 @@ console.log('Running crons!');
           t3: t3 ?? '',
           t4: t4 ?? '',
           t5: t5 ?? '',
+          t6: t6 ?? '',
+          t7: t7 ?? '',
+          t8: t8 ?? '',
+          t9: t9 ?? '',
+          t10: t10 ?? '',
           title,
           body,
           previewImgName: icon,
