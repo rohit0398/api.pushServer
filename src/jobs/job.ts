@@ -1,34 +1,34 @@
-import mongoose from "mongoose";
-import WebPush from "web-push";
-import { random } from "lodash";
-import parentPort from "worker_threads";
-import MongoConnection from "../config/mongoConnection";
+import mongoose from 'mongoose';
+import WebPush from 'web-push';
+import { random } from 'lodash';
+import parentPort from 'worker_threads';
+import MongoConnection from '../config/mongoConnection';
 import {
   getSubscriptionsCron,
   updateSubscription,
-} from "../v1/subscription/subscription.resources";
-import { getCampaignCron } from "../v1/campaign/campaign.resources";
-import { getCreative } from "../v1/creative/creative.resources";
-import { createCampaignAnalytics } from "../v1/analytics/analytics.resources";
-import { replaceVariables } from "../util/helper";
+} from '../v1/subscription/subscription.resources';
+import { getCampaignCron } from '../v1/campaign/campaign.resources';
+import { getCreative } from '../v1/creative/creative.resources';
+import { createCampaignAnalytics } from '../v1/analytics/analytics.resources';
+import { replaceVariables } from '../util/helper';
 
-console.log("Running crons!");
+console.log('Running crons!');
 
 (async () => {
   if (mongoose.connection.readyState === 0) await MongoConnection();
 
-  console.log("mongoose connection", mongoose.connection.readyState);
+  console.log('mongoose connection', mongoose.connection.readyState);
 
   const vapidKeys = {
     publicKey:
-      "BL4CN0bTsLEAUoC4WV1xcNAYj33T1F58PgeJgEUO0n_TQn1qpKG1oa7bfmhizBG1ei3tD_jka35c6HhBmw4Mkms",
-    privateKey: "mk1uGAGwgg4DKmZfTXG6u45t5LlBj7zglQl3cdgJEmw",
+      'BL4CN0bTsLEAUoC4WV1xcNAYj33T1F58PgeJgEUO0n_TQn1qpKG1oa7bfmhizBG1ei3tD_jka35c6HhBmw4Mkms',
+    privateKey: 'mk1uGAGwgg4DKmZfTXG6u45t5LlBj7zglQl3cdgJEmw',
   };
 
   WebPush.setVapidDetails(
-    "https://api-pushserver.onrender.com",
+    'https://api-pushserver.onrender.com',
     vapidKeys.publicKey,
-    vapidKeys.privateKey
+    vapidKeys.privateKey,
   );
 
   // Get the current date and time
@@ -37,13 +37,13 @@ console.log("Running crons!");
   const currentDayNumber = currentDate.getDay();
   // Define an array of day names
   const dayNames = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
   ];
   // Get the current day name
   const currentDayName = dayNames[currentDayNumber];
@@ -53,7 +53,7 @@ console.log("Running crons!");
   const campaigns = await getCampaignCron(
     {
       $and: [
-        { status: "ACTIVE" },
+        { status: 'ACTIVE' },
         {
           $or: [
             { hours: { $size: 0 } }, // Include if "hours" is empty
@@ -68,10 +68,10 @@ console.log("Running crons!");
         },
       ],
     },
-    { query: {} }
+    { query: {} },
   );
 
-  const creatives = await getCreative({ query: { status: "ACTIVE" } } as any);
+  const creatives = await getCreative({ query: { status: 'ACTIVE' } } as any);
 
   for (const campaign of campaigns) {
     // Convert the filter criteria to lowercase for case-insensitive matching
@@ -79,33 +79,33 @@ console.log("Running crons!");
     if (Array.isArray(campaign.feeds) && campaign.feeds.length) {
       searchCriteria.feedId = {
         $in: campaign.feeds.map(
-          (feedId) => new mongoose.Types.ObjectId(feedId)
+          (feedId) => new mongoose.Types.ObjectId(feedId),
         ),
       };
     }
     if (Array.isArray(campaign.languages) && campaign.languages.length) {
       searchCriteria.lang = {
-        $in: campaign.languages.map((value) => new RegExp(value, "i")),
+        $in: campaign.languages.map((value) => new RegExp(value, 'i')),
       };
     }
     if (Array.isArray(campaign.os) && campaign.os.length) {
       searchCriteria.os = {
-        $in: campaign.os.map((value) => new RegExp(value, "i")),
+        $in: campaign.os.map((value) => new RegExp(value, 'i')),
       };
     }
     if (Array.isArray(campaign.devices) && campaign.devices.length) {
       searchCriteria.deviceType = {
-        $in: campaign.devices.map((value) => new RegExp(value, "i")),
+        $in: campaign.devices.map((value) => new RegExp(value, 'i')),
       };
     }
     if (Array.isArray(campaign.browsers) && campaign.browsers.length) {
       searchCriteria.browser = {
-        $in: campaign.browsers.map((value) => new RegExp(value, "i")),
+        $in: campaign.browsers.map((value) => new RegExp(value, 'i')),
       };
     }
     if (Array.isArray(campaign.countries) && campaign.countries.length) {
       searchCriteria.country = {
-        $in: campaign.countries.map((value) => new RegExp(value, "i")),
+        $in: campaign.countries.map((value) => new RegExp(value, 'i')),
       };
     }
 
@@ -113,36 +113,33 @@ console.log("Running crons!");
     const now: any = new Date();
     if (campaign?.subscriptionFrom) {
       createdAt.$lt = new Date(
-        now - campaign?.subscriptionFrom * 60 * 60 * 1000
+        now - campaign?.subscriptionFrom * 60 * 60 * 1000,
       );
     }
 
     if (
-      campaign?.subscriptionTo &&
-      campaign?.subscriptionTo > ((campaign?.subscriptionFrom as number) ?? 0)
+      campaign?.subscriptionTo
+      && campaign?.subscriptionTo > ((campaign?.subscriptionFrom as number) ?? 0)
     ) {
       createdAt.$gte = new Date(
-        now - campaign?.subscriptionTo * 60 * 60 * 1000
+        now - campaign?.subscriptionTo * 60 * 60 * 1000,
       );
     }
     if (Object.keys(createdAt).length) searchCriteria.createdAt = createdAt;
 
-    searchCriteria.type = "ACTIVE";
+    searchCriteria.type = 'ACTIVE';
 
     const subscriptions = await getSubscriptionsCron(searchCriteria, {
       query: {},
     });
 
     if (Array.isArray(subscriptions) && subscriptions.length) {
-      let findCreatives = creatives.filter((val) =>
-        campaign?._id.equals(val?.campaignId)
-      );
+      let findCreatives = creatives.filter((val) => campaign?._id.equals(val?.campaignId));
 
       if (findCreatives.length === 0) findCreatives = creatives;
-      const maxChoose =
-        campaign?.random && campaign?.random <= findCreatives.length - 1
-          ? campaign?.random
-          : findCreatives.length - 1;
+      const maxChoose = campaign?.random && campaign?.random <= findCreatives.length - 1
+        ? campaign?.random
+        : findCreatives.length - 1;
 
       const choosedCreative = findCreatives[random(0, maxChoose)];
 
@@ -164,7 +161,9 @@ console.log("Running crons!");
           t10,
           createdAt,
         } = sub;
-        const { title, body, icon, image, url, buttonUrl } = choosedCreative;
+        const {
+          title, body, icon, image, url, buttonUrl,
+        } = choosedCreative;
         const dateString = createdAt;
         const givenDate: any = new Date(dateString);
         const currentDate: any = new Date();
@@ -175,18 +174,18 @@ console.log("Running crons!");
           campaignId: campaign._id,
           creativeId: choosedCreative._id,
           subscriptionId: _id,
-          feedId: feedId ?? "",
-          clickId: clickId ?? "",
-          t1: t1 ?? "",
-          t2: t2 ?? "",
-          t3: t3 ?? "",
-          t4: t4 ?? "",
-          t5: t5 ?? "",
-          t6: t6 ?? "",
-          t7: t7 ?? "",
-          t8: t8 ?? "",
-          t9: t9 ?? "",
-          t10: t10 ?? "",
+          feedId: feedId ?? '',
+          clickId: clickId ?? '',
+          t1: t1 ?? '',
+          t2: t2 ?? '',
+          t3: t3 ?? '',
+          t4: t4 ?? '',
+          t5: t5 ?? '',
+          t6: t6 ?? '',
+          t7: t7 ?? '',
+          t8: t8 ?? '',
+          t9: t9 ?? '',
+          t10: t10 ?? '',
           title,
           body,
           previewImgName: icon,
@@ -211,8 +210,8 @@ console.log("Running crons!");
         promises.push(
           WebPush.sendNotification(
             sub.pushSubscription,
-            JSON.stringify(choosedCreative)
-          )
+            JSON.stringify(choosedCreative),
+          ),
         );
       }
 
@@ -222,9 +221,8 @@ console.log("Running crons!");
       let sentCount = 0;
 
       res.forEach((val, ind) => {
-        if (val.status === "fulfilled") sentCount += 1;
-        else if (val.status === "rejected")
-          unactiveIds.push(subscriptions[ind]._id);
+        if (val.status === 'fulfilled') sentCount += 1;
+        else if (val.status === 'rejected') unactiveIds.push(subscriptions[ind]._id);
       });
 
       const operationsPromises: any = [];
@@ -233,8 +231,8 @@ console.log("Running crons!");
           createCampaignAnalytics({
             campaignId: campaign?._id,
             count: sentCount,
-            type: "SENT",
-          })
+            type: 'SENT',
+          }),
         );
       }
 
@@ -242,8 +240,8 @@ console.log("Running crons!");
         operationsPromises.push(
           updateSubscription(
             { _id: { $in: unactiveIds } },
-            { type: "UNACTIVE" }
-          )
+            { type: 'UNACTIVE' },
+          ),
         );
       }
 
@@ -253,6 +251,6 @@ console.log("Running crons!");
 
   // throw Error("error in code");
   // signal to parent that the job is done
-  if (parentPort) parentPort.postMessage("done");
+  if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
 })();

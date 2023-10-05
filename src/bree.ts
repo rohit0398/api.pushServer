@@ -5,7 +5,7 @@ const bree = new Bree({
   worker: {
     env: {
       CONNECTION_STRING:
-        'mongodb+srv://rkkb7828131:ZGElfyRyDY75KOA0@cluster0.bnasbhp.mongodb.net/?retryWrites=true&w=majority',
+        'mongodb://accountAdmin01:0Fpejk7v7PT+@127.0.0.1:27017/pushserver?directConnection=true&serverSelectionTimeoutMS=8000',
       API_URL: 'https://api.vibesender.com',
       JWT_STRING: 'pushServer#234',
     },
