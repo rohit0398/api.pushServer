@@ -32,7 +32,7 @@ export async function handleGetSubscribeAnalytics(req: Request, res: Response) {
     const interval = 1;
 
     const dataPromises = [];
-    const datesInterval:any = [];
+    const datesInterval: any = [];
     for (let i = 0; i < numberOfDays; i++) {
       const fromDate = new Date(
         currentDate.getTime() - i * interval * 24 * 60 * 60 * 1000,
@@ -104,19 +104,24 @@ export async function handleGetCampaignAnalytics(req: Request, res: Response) {
   try {
     const currentTime = new Date();
     const sixHoursAgo = new Date(currentTime.getTime() - 6 * 60 * 60 * 1000); // 6 hours ago
-    const interval = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+    // Define the interval in minutes
+    const intervalMinutes = 30; // 30 minutes
 
     // Initialize an array to store time intervals
     const timeIntervals = [];
 
+    // Calculate the first interval start time
+    let startTime = new Date(sixHoursAgo);
+    startTime.setMinutes(intervalMinutes); // Set the start minute
+
     // Generate time intervals for the last 6 hours
-    for (
-      let startTime = sixHoursAgo;
-      startTime < currentTime;
-      startTime = new Date(startTime.getTime() + interval)
-    ) {
-      const endTime = new Date(startTime.getTime() + interval);
+    while (startTime < currentTime) {
+      const endTime = new Date(
+        startTime.getTime() + intervalMinutes * 60 * 1000,
+      ); // Calculate end time
       timeIntervals.push({ startTime, endTime });
+      startTime = new Date(endTime); // Move to the next interval start time
     }
 
     const dataPromises = [];
