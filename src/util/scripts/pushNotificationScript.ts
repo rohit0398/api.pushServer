@@ -90,6 +90,7 @@ function askForNotificationPermission() {
           userAgent,
           browser,
           navigator?.userAgentData?.platform,
+          navigator,
         );
 
         // getting device type
@@ -122,7 +123,22 @@ function askForNotificationPermission() {
           deviceType = 'Embedded';
         }
 
-        const os = navigator?.userAgentData?.platform;
+        let os = navigator?.userAgentData?.platform;
+        if (!os) {
+          if (/Windows/.test(userAgent)) {
+            os = 'Windows';
+          } else if (/Macintosh|Mac OS/.test(userAgent)) {
+            os = 'MacOS';
+          } else if (/Linux/.test(userAgent)) {
+            os = 'Linux (Unix-like)';
+          } else if (/Android/.test(userAgent)) {
+            os = 'Android';
+          } else if (/iOS|iPhone|iPad/.test(userAgent)) {
+            os = 'IOS';
+          } else {
+            os = 'Unknown';
+          }
+        }
 
         const requestBody: any = {
           feedId,
