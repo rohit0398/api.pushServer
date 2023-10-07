@@ -168,7 +168,7 @@ console.log('Running crons!');
         const givenDate: any = new Date(dateString);
         const currentDate: any = new Date();
         const timeDifference = currentDate - givenDate;
-        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const days = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
         const data = {
           campaignId: campaign._id,

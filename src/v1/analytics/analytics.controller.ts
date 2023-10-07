@@ -130,7 +130,11 @@ export async function handleGetCampaignAnalytics(req: Request, res: Response) {
         getCampaignAnalytics({
           startTime,
           endTime,
-          type: ['SENT', 'CLICKED', 'CLOSED', 'SHOWN'],
+          type: [
+            'SENT',
+            'CLICKED',
+            //  'CLOSED', 'SHOWN'
+          ],
         }),
       );
     }
@@ -139,7 +143,11 @@ export async function handleGetCampaignAnalytics(req: Request, res: Response) {
       getCampaignAnalytics({
         startTime: new Date(currentTime.getTime() - 15 * 24 * 60 * 60 * 1000),
         endTime: new Date(currentTime.getTime() - 0 * 24 * 60 * 60 * 1000),
-        type: ['SENT', 'CLICKED', 'CLOSED', 'SHOWN'],
+        type: [
+          'SENT',
+          'CLICKED',
+          // "CLOSED", "SHOWN"
+        ],
       }),
     );
 

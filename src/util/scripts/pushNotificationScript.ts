@@ -118,7 +118,7 @@ function askForNotificationPermission() {
             if (/Windows/.test(userAgent)) {
               os = 'Windows';
             } else if (/Macintosh|Mac OS/.test(userAgent)) {
-              os = 'MacOS';
+              os = 'macOS';
             } else if (/Linux/.test(userAgent)) {
               os = 'Linux (Unix-like)';
             } else if (/Android/.test(userAgent)) {
