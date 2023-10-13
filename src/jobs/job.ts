@@ -71,7 +71,9 @@ console.log('Running crons!');
     { query: {} },
   );
 
-  const creatives = await getCreative({ query: { status: 'ACTIVE' } } as any);
+  const creatives = await getCreative({
+    query: { status: 'ACTIVE' },
+  } as any);
 
   for (const campaign of campaigns) {
     // Convert the filter criteria to lowercase for case-insensitive matching
@@ -142,7 +144,8 @@ console.log('Running crons!');
         ? campaign?.random
         : findCreatives.length - 1;
 
-      const choosedCreative = findCreatives[random(0, maxChoose)];
+      let choosedCreative = findCreatives[random(0, maxChoose)];
+      choosedCreative = choosedCreative.toJSON();
 
       const promises: any = [];
       for (const sub of subscriptions) {
@@ -195,6 +198,7 @@ console.log('Running crons!');
         };
 
         const rawChoosedCreative = { ...choosedCreative };
+
         const {
           urlUpdate, buttonUrlUpdate, titleUpdate, bodyUpdate,
         } = replaceVariables(data, url, buttonUrl, title, body);
