@@ -22,9 +22,12 @@ export function queryGenerator(req: Request) {
 }
 
 export function replaceVariables(
-  url: string,
   variables: { [key: string]: any },
-): string {
+  url: string,
+  buttonUrl?: string,
+  title?: string,
+  body?: string,
+): any {
   // Iterate through the properties of the variables object
   for (const key in variables) {
     if (variables.hasOwnProperty(key)) {
@@ -32,8 +35,16 @@ export function replaceVariables(
       const regex = new RegExp(`{${key}}`, 'g');
       // Replace the placeholder with the corresponding value from the object
       url = url.replace(regex, variables[key]);
+      if (buttonUrl) buttonUrl = buttonUrl.replace(regex, variables[key]);
+      if (title) title = title.replace(regex, variables[key]);
+      if (body) body = body.replace(regex, variables[key]);
     }
   }
   // Return the URL with placeholders replaced by values
-  return url;
+  return {
+    urlUpdate: url,
+    buttonUrlUpdate: buttonUrl,
+    titleUpdate: title,
+    bodyUpdate: body,
+  };
 }

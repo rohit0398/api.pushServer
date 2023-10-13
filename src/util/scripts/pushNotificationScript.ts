@@ -12,8 +12,9 @@
       else denied = 0;
       if (denied || denied === 0) {
         if (denied < urls.length) {
-          const splitUrl = url.search?.split('&denied=');
-          window.location.href = `${urls[denied]}${splitUrl[0]}&denied=${denied}`;
+          const splitUrl = url.search?.split('denied=');
+          if (url.search.includes('?')) window.location.href = `${urls[denied]}${splitUrl[0]}&denied=${denied}`;
+          else window.location.href = `${urls[denied]}${splitUrl[0]}?denied=${denied}`;
         }
       }
     }

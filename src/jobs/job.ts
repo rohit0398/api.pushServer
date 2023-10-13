@@ -137,6 +137,7 @@ console.log('Running crons!');
       let findCreatives = creatives.filter((val) => campaign?._id.equals(val?.campaignId));
 
       if (findCreatives.length === 0) findCreatives = creatives;
+
       const maxChoose = campaign?.random && campaign?.random <= findCreatives.length - 1
         ? campaign?.random
         : findCreatives.length - 1;
@@ -192,25 +193,23 @@ console.log('Running crons!');
           bodyImgName: image,
           days,
         };
-        const urlUpdate = replaceVariables(url, data);
-        choosedCreative.url = urlUpdate;
-        if (buttonUrl) {
-          const buttonUrlUpdate = replaceVariables(buttonUrl, data);
-          choosedCreative.buttonUrl = buttonUrlUpdate;
-        }
-        if (title) {
-          const titleUpdate = replaceVariables(title, data);
-          choosedCreative.title = titleUpdate;
-        }
-        if (body) {
-          const bodyUpdate = replaceVariables(body, data);
-          choosedCreative.body = bodyUpdate;
-        }
+
+        const rawChoosedCreative = { ...choosedCreative };
+        const {
+          urlUpdate, buttonUrlUpdate, titleUpdate, bodyUpdate,
+        } = replaceVariables(data, url, buttonUrl, title, body);
+        rawChoosedCreative.url = urlUpdate;
+
+        if (buttonUrlUpdate) rawChoosedCreative.buttonUrl = buttonUrlUpdate;
+
+        if (titleUpdate) rawChoosedCreative.title = titleUpdate;
+
+        if (bodyUpdate) rawChoosedCreative.body = bodyUpdate;
 
         promises.push(
           WebPush.sendNotification(
             sub.pushSubscription,
-            JSON.stringify(choosedCreative),
+            JSON.stringify(rawChoosedCreative),
           ),
         );
       }
